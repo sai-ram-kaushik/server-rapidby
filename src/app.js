@@ -27,6 +27,10 @@ import storeCatalogRouter from "./routes/catalog.routes.js";
 import orderRouter from "./routes/order.routes.js";
 import paymentRouter from "./routes/payment.routes.js";
 
+// store public imports
+
+import storePublicRouter from "./routes/publicShare.routes.js";
+
 // admin routes
 app.use("/api/admin", adminRouter);
 app.use("/api/admin", categoryRouter);
@@ -38,4 +42,6 @@ app.use("/api/store", storeCatalogRouter);
 app.use("/api/store", orderRouter);
 app.use("/api/store", paymentRouter);
 
+// public share routes
+app.use("/api/public", storePublicRouter);
 export { app };
