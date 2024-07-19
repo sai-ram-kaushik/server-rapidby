@@ -16,7 +16,7 @@ router.route("/create-catalog").post(upload.single("imageUrl"), createCatalog);
 router.route("/get-all-catalogs").get(getAllCatalogs);
 router.route("/add-product").post(verifyJWT, addProductFromCatalog);
 router.route("/get-products").get(verifyJWT, getProductsByUser);
-router.route("/get-product/:id").get(getProductByIdForUser);
+router.route("/:storeName/product/:id").get(getProductByIdForUser);
 router
   .route("/remove-product-from-myproduct")
   .post(verifyJWT, removeProductFromMyProduct);

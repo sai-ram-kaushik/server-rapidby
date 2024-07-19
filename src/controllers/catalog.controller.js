@@ -5,6 +5,7 @@ import { Category } from "../models/category.models.js";
 import { Catalog } from "../models/catalog.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { Product } from "../models/product.models.js";
+import { StoreAdmin } from "../models/store-admin.models.js";
 
 const createCatalog = asyncHandler(async (req, res) => {
   const { name, category, amount, quantity, status, aboutProduct } = req.body;
@@ -98,14 +99,17 @@ const getProductsByUser = asyncHandler(async (req, res) => {
 });
 
 const getProductByIdForUser = asyncHandler(async (req, res) => {
-  const storeAdminId = req.user;
-  const { id } = req.params;
+  const { storeName, id } = req.params;
 
-  console.log(`StoreAdminId: ${storeAdminId}, CatalogItemId: ${id}`);
+  // Find the user by store name
+  const user = await StoreAdmin.findOne({ storeName });
+  if (!user) {
+    throw new ApiError(404, "Store not found");
+  }
 
   const product = await Product.findOne({
     catalogItem: id,
-    user: storeAdminId,
+    user: user._id,
   }).populate("catalogItem");
 
   if (!product) {
