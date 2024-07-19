@@ -21,7 +21,6 @@ const getPublicStoreData = asyncHandler(async (req, res) => {
 const getPublicStoreProductByName = asyncHandler(async (req, res) => {
   try {
     const storeName = req.params.storeName;
-    console.log(`Searching for store with name: ${storeName}`);
 
     const store = await StoreAdmin.findOne({ storeName });
 
@@ -30,22 +29,14 @@ const getPublicStoreProductByName = asyncHandler(async (req, res) => {
       throw new ApiError(404, "Store name not found");
     }
 
-    console.log(`Found store: ${store._id}`);
-
-    // Log query parameters
-    console.log(`Searching for products with user: ${store._id}`);
-
     const products = await Product.find({ user: store._id }).populate("catalogItem");
 
-    // Log the result of the products query
-    console.log(`Products found: ${products.length}`, products);
 
     if (!products || products.length === 0) {
       console.log(`No products found for store: ${store._id}`);
       throw new ApiError(404, "No products found for this store");
     }
 
-    console.log(`Found products for store: ${store._id}`);
     return res.status(200).json(new ApiResponse(200, products, "Products"));
   } catch (error) {
     console.error("Server error:", error);
