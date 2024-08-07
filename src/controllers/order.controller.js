@@ -90,6 +90,19 @@ const deleteOrder = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Order has been deleted"));
 });
 
+const getPendingOrdersCount = asyncHandler(async (req, res) => {
+  try {
+    const pendingCount = await Order.countDocuments({ status: "pending" });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, pendingCount, "Total number of pending orders"));
+  } catch (error) {
+    console.error("Error getting pending orders count:", error);
+    throw new ApiError(500, "Internal Server Error");
+  }
+});
+
 export {
   createOrder,
   getAllOrders,
@@ -97,4 +110,5 @@ export {
   getNumberOfOrders,
   updateOrderDetails,
   deleteOrder,
+  getPendingOrdersCount
 };
