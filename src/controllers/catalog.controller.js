@@ -139,6 +139,17 @@ const removeProductFromMyProduct = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, product, "Product removed successfully"));
 });
 
+const countMyProducts = asyncHandler(async (req, res) => {
+  const storeAdminId = req.user;
+  console.log(storeAdminId);
+
+  const productCount = await Product.countDocuments({ user: storeAdminId });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { count: productCount }, "Product count retrieved successfully"));
+});
+
 export {
   createCatalog,
   getAllCatalogs,
@@ -146,4 +157,5 @@ export {
   getProductsByUser,
   getProductByIdForUser,
   removeProductFromMyProduct,
+  countMyProducts
 };

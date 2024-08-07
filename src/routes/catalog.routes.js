@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   addProductFromCatalog,
+  countMyProducts,
   createCatalog,
   getAllCatalogs,
   getProductByIdForUser,
@@ -20,5 +21,6 @@ router.route("/:storeName/product/:id").get(getProductByIdForUser);
 router
   .route("/remove-product-from-myproduct")
   .post(verifyJWT, removeProductFromMyProduct);
+router.route("/count-products").get(verifyJWT ,countMyProducts);
 
 export default router;
