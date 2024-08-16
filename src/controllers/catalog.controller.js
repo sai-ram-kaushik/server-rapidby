@@ -141,7 +141,6 @@ const removeProductFromMyProduct = asyncHandler(async (req, res) => {
 
 const countMyProducts = asyncHandler(async (req, res) => {
   const storeAdminId = req.user;
-  console.log(storeAdminId);
 
   const productCount = await Product.countDocuments({ user: storeAdminId });
 

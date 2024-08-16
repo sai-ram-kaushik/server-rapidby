@@ -148,7 +148,9 @@ const getStoreAdminDetails = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Store Admin ID is required");
   }
 
-  const storeAdmin = await StoreAdmin.findById(storeAdminId).select("-password -refreshToken");
+  const storeAdmin = await StoreAdmin.findById(storeAdminId).select(
+    "-password -refreshToken"
+  );
 
   if (!storeAdmin) {
     throw new ApiError(404, "Store Admin not found");
@@ -157,8 +159,25 @@ const getStoreAdminDetails = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, storeAdmin, "Store Admin details retrieved successfully")
+      new ApiResponse(
+        200,
+        storeAdmin,
+        "Store Admin details retrieved successfully"
+      )
     );
 });
 
-export { createStoreAdmin, loginStoreAdmin, getStoreAdminDetails };
+const getStoreAdminCout = asyncHandler(async (req, res) => {
+  const storeAdminCount = await StoreAdmin.countDocuments();
+
+  return res
+    .status(201)
+    .json(new ApiResponse(200, storeAdminCount, "Store Admin Count"));
+});
+
+export {
+  createStoreAdmin,
+  loginStoreAdmin,
+  getStoreAdminDetails,
+  getStoreAdminCout,
+};

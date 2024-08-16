@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createStoreAdmin,
+  getStoreAdminCout,
   getStoreAdminDetails,
   loginStoreAdmin,
 } from "../controllers/store-admin.controller.js";
@@ -14,4 +15,5 @@ router
   .post(upload.single("imageUrl"), createStoreAdmin);
 router.route("/login-store-admin").post(loginStoreAdmin);
 router.route("/get-store-admin-details").get(verifyJWT, getStoreAdminDetails);
+router.route("/get-count").get(getStoreAdminCout)
 export default router;
