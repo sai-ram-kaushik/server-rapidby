@@ -175,9 +175,31 @@ const getStoreAdminCout = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, storeAdminCount, "Store Admin Count"));
 });
 
+const resetPassword = asyncHandler(async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  if (!email || !newPassword) {
+    throw new ApiError(400, "Email and new password are required");
+  }
+
+  const storeAdmin = await StoreAdmin.findOne({ email });
+  if (!storeAdmin) {
+    throw new ApiError(404, "Store Admin with this email does not exist");
+  }
+
+  storeAdmin.password = newPassword;
+
+  await storeAdmin.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Password has been updated successfully"));
+});
+
 export {
   createStoreAdmin,
   loginStoreAdmin,
   getStoreAdminDetails,
   getStoreAdminCout,
+  resetPassword,
 };

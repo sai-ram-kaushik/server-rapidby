@@ -4,6 +4,7 @@ import {
   getStoreAdminCout,
   getStoreAdminDetails,
   loginStoreAdmin,
+  resetPassword,
 } from "../controllers/store-admin.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -15,5 +16,6 @@ router
   .post(upload.single("imageUrl"), createStoreAdmin);
 router.route("/login-store-admin").post(loginStoreAdmin);
 router.route("/get-store-admin-details").get(verifyJWT, getStoreAdminDetails);
-router.route("/get-count").get(getStoreAdminCout)
+router.route("/get-count").get(getStoreAdminCout);
+router.route("/reset-password").put(resetPassword);
 export default router;
