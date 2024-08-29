@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { Order } from "../models/order.models.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import moment from "moment";
 
 const createOrder = asyncHandler(async (req, res) => {
   try {
@@ -69,7 +70,9 @@ const updateOrderDetails = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    res.status(200).json({ message: "Order status updated successfully", updatedOrder });
+    res
+      .status(200)
+      .json({ message: "Order status updated successfully", updatedOrder });
   } catch (error) {
     console.error("Error updating order status:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -96,11 +99,49 @@ const getPendingOrdersCount = asyncHandler(async (req, res) => {
 
     return res
       .status(200)
-      .json(new ApiResponse(200, pendingCount, "Total number of pending orders"));
+      .json(
+        new ApiResponse(200, pendingCount, "Total number of pending orders")
+      );
   } catch (error) {
     console.error("Error getting pending orders count:", error);
     throw new ApiError(500, "Internal Server Error");
   }
+});
+
+const getMonthlyMetrics = asyncHandler(async (req, res) => {
+  const startOfMonth = moment().startOf("month").toDate();
+  const endOfMonth = moment().endOf("month").toDate();
+
+  const orders = await Order.find({
+    createdAt: {
+      $gte: startOfMonth,
+      $lte: endOfMonth,
+    },
+  });
+
+  let totalSales = 0;
+  let totalProfit = 0;
+  let productsSold = 0;
+
+  orders.forEach((order) => {
+    totalSales += order.totalPrice;
+    totalProfit += order.totalPrice - order.cost;
+    order.items.forEach((item) => {
+      productsSold += item.quantity;
+    });
+  });
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        totalSales,
+        totalProfit,
+        productsSold,
+      },
+      "Monthly metrics calculated successfully"
+    )
+  );
 });
 
 export {
@@ -110,5 +151,6 @@ export {
   getNumberOfOrders,
   updateOrderDetails,
   deleteOrder,
-  getPendingOrdersCount
+  getPendingOrdersCount,
+  getMonthlyMetrics,
 };

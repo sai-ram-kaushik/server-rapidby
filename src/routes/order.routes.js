@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createOrder,
   getAllOrders,
+  getMonthlyMetrics,
   getPendingOrdersCount,
   updateOrderDetails,
 } from "../controllers/order.controller.js";
@@ -12,5 +13,6 @@ router.route("/create-order").post(createOrder);
 router.route("/get-all-orders").get(getAllOrders);
 router.route("/update-order-details/:id").put(updateOrderDetails);
 router.route("/order-pending-count").get(getPendingOrdersCount);
+router.route("/order-metrix").get(getMonthlyMetrics);
 
 export default router;
