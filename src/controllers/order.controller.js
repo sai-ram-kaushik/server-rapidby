@@ -112,8 +112,42 @@ const getMonthlyMetrics = asyncHandler(async (req, res) => {
   const startOfMonth = moment().startOf("month").toDate();
   const endOfMonth = moment().endOf("month").toDate();
 
+  // Fetch all orders created within the current month
   const orders = await Order.find({
     createdAt: {
+      $gte: startOfMonth,
+      $lte: endOfMonth,
+    },
+  });
+
+  // Fetch counts for different order statuses within the current month
+  const deliveredOrdersCount = await Order.countDocuments({
+    status: "delivered",
+    updatedAt: {
+      $gte: startOfMonth,
+      $lte: endOfMonth,
+    },
+  });
+
+  const readyToDeliverCount = await Order.countDocuments({
+    status: "ready to deliver",
+    updatedAt: {
+      $gte: startOfMonth,
+      $lte: endOfMonth,
+    },
+  });
+
+  const inQueueCount = await Order.countDocuments({
+    status: "in queue",
+    updatedAt: {
+      $gte: startOfMonth,
+      $lte: endOfMonth,
+    },
+  });
+
+  const pendingCount = await Order.countDocuments({
+    status: "pending",
+    updatedAt: {
       $gte: startOfMonth,
       $lte: endOfMonth,
     },
@@ -122,6 +156,7 @@ const getMonthlyMetrics = asyncHandler(async (req, res) => {
   let totalSales = 0;
   let totalProfit = 0;
   let productsSold = 0;
+  let totalOrdersCount = orders.length;
 
   orders.forEach((order) => {
     totalSales += order.totalPrice;
@@ -138,11 +173,17 @@ const getMonthlyMetrics = asyncHandler(async (req, res) => {
         totalSales,
         totalProfit,
         productsSold,
+        totalOrdersCount,
+        deliveredOrdersCount,
+        readyToDeliverCount,
+        inQueueCount,
+        pendingCount,
       },
       "Monthly metrics calculated successfully"
     )
   );
 });
+
 
 export {
   createOrder,
