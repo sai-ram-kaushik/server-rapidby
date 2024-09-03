@@ -1,12 +1,18 @@
 import mongoose from "mongoose";
 
+const messageSchema = new mongoose.Schema({
+  message: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const ticketSchema = new mongoose.Schema(
   {
-    id: {
-      type: String,
-      required: true,
-    },
-
     name: {
       type: String,
       required: true,
@@ -22,10 +28,7 @@ const ticketSchema = new mongoose.Schema(
       default: "Open",
     },
 
-    message: {
-      type: String,
-      required: true,
-    },
+    messages: [messageSchema],
   },
   { timestamps: true }
 );

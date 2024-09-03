@@ -27,6 +27,7 @@ import storeCatalogRouter from "./routes/catalog.routes.js";
 import orderRouter from "./routes/order.routes.js";
 import paymentRouter from "./routes/payment.routes.js";
 import customDesignRouter from "./routes/custom-design.routes.js";
+import ticketRouter from "./routes/ticket.routes.js";
 
 // store public imports
 
@@ -43,6 +44,7 @@ app.use("/api/store", storeCatalogRouter);
 app.use("/api/store", orderRouter);
 app.use("/api/store", paymentRouter);
 app.use("/api/store", customDesignRouter);
+app.use("/api/store", ticketRouter);
 
 // public share routes
 app.use("/api/public", storePublicRouter);
