@@ -80,10 +80,37 @@ const replyToTicket = asyncHandler(async (req, res) => {
   }
 });
 
+const getTicketCounts = asyncHandler(async (req, res) => {
+  try {
+    const totalTickets = await Ticket.countDocuments();
+
+    const openTickets = await Ticket.countDocuments({ status: "open" });
+
+    const inProcessTickets = await Ticket.countDocuments({
+      status: "in-process",
+    });
+
+    const closedTickets = await Ticket.countDocuments({ status: "closed" });
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { totalTickets, openTickets, inProcessTickets, closedTickets },
+          "Ticket counts fetched successfully"
+        )
+      );
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export {
   getAllTickets,
   getTicketByItsId,
   createTicket,
   updateTicketStatus,
   replyToTicket,
+  getTicketCounts
 };
