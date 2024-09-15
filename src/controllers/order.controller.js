@@ -184,6 +184,60 @@ const getMonthlyMetrics = asyncHandler(async (req, res) => {
   );
 });
 
+const getRevenuePerMonth = asyncHandler(async (req, res) => {
+  try {
+    // Get the current year to filter orders by year
+    const currentYear = moment().year();
+
+    // Aggregate data to calculate total revenue for each month
+    const revenueData = await Order.aggregate([
+      {
+        // Match orders created in the current year
+        $match: {
+          createdAt: {
+            $gte: new Date(`${currentYear}-01-01`),
+            $lt: new Date(`${currentYear + 1}-01-01`),
+          },
+        },
+      },
+      {
+        // Group by month and calculate the total revenue
+        $group: {
+          _id: { $month: "$createdAt" }, // Group by month
+          totalRevenue: { $sum: "$totalPrice" }, // Calculate total revenue
+        },
+      },
+      {
+        // Sort by month (ascending order)
+        $sort: { "_id": 1 },
+      },
+    ]);
+
+    // Create an array with default revenue set to 0 for all 12 months
+    const revenueByMonth = Array(12).fill(0);
+
+    // Populate the revenue data for the corresponding months
+    revenueData.forEach((data) => {
+      const monthIndex = data._id - 1; // Month index (January is 0)
+      revenueByMonth[monthIndex] = data.totalRevenue;
+    });
+
+    // Return the monthly revenue data
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { revenueByMonth },
+          "Monthly revenue data fetched successfully"
+        )
+      );
+  } catch (error) {
+    console.error("Error fetching monthly revenue data:", error);
+    throw new ApiError(500, "Internal Server Error");
+  }
+});
+
 
 export {
   createOrder,
@@ -194,4 +248,5 @@ export {
   deleteOrder,
   getPendingOrdersCount,
   getMonthlyMetrics,
+  getRevenuePerMonth
 };
