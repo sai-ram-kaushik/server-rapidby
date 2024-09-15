@@ -3,6 +3,7 @@ import {
   createOrder,
   getAllOrders,
   getMonthlyMetrics,
+  getOrderByItsId,
   getPendingOrdersCount,
   updateOrderDetails,
 } from "../controllers/order.controller.js";
@@ -14,5 +15,6 @@ router.route("/get-all-orders").get(getAllOrders);
 router.route("/update-order-details/:id").put(updateOrderDetails);
 router.route("/order-pending-count").get(getPendingOrdersCount);
 router.route("/order-metrix").get(getMonthlyMetrics);
+router.route("/get-order/:id").get(getOrderByItsId);
 
 export default router;
