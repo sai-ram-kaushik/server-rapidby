@@ -32,7 +32,7 @@ const createAdmin = asyncHandler(async (req, res) => {
   });
 
   if (existedAdmin) {
-    throw new ApiError(409, "Admin already existed");
+    throw new ApiError(409, "Admin already exists");
   }
 
   const admin = await Admin.create({ username, email, password });

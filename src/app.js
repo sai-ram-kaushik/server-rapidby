@@ -32,6 +32,7 @@ import ticketRouter from "./routes/ticket.routes.js";
 // store public imports
 
 import storePublicRouter from "./routes/publicShare.routes.js";
+import storePublicUser from "./routes/user.routes.js";
 
 // admin routes
 app.use("/api/admin", adminRouter);
@@ -48,4 +49,6 @@ app.use("/api/store", ticketRouter);
 
 // public share routes
 app.use("/api/public", storePublicRouter);
+app.use("/api/public", storePublicUser);
+
 export { app };
