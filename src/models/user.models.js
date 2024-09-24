@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema(
   {
@@ -21,6 +21,14 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.String,
       ref: "StoreAdmin",
       required: true, // User must be linked to a store
+    },
+    contact: {
+      type: String,
+      required: true,
+    },
+    province: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

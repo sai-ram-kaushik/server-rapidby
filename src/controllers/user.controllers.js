@@ -23,9 +23,9 @@ const generateAccessAndRefreshToken = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, store } = req.body;
+  const { name, email, password, store, contact, province } = req.body;
 
-  if ([name, email, password, store].some((fields) => fields === "")) {
+  if ([name, email, password, store, contact, province].some((fields) => fields === "")) {
     throw new ApiError(400, "All fields are required");
   }
 
@@ -48,6 +48,8 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     store: existedStore.storeName, // Use _id from the found store document
+    contact,
+    province
   });
 
   return res
