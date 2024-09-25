@@ -25,7 +25,11 @@ const generateAccessAndRefreshToken = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, store, contact, province } = req.body;
 
-  if ([name, email, password, store, contact, province].some((fields) => fields === "")) {
+  if (
+    [name, email, password, store, contact, province].some(
+      (fields) => fields === ""
+    )
+  ) {
     throw new ApiError(400, "All fields are required");
   }
 
@@ -49,7 +53,7 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     store: existedStore.storeName, // Use _id from the found store document
     contact,
-    province
+    province,
   });
 
   return res
@@ -91,10 +95,14 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   // Generate access and refresh tokens
-  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
 
   // Fetch logged-in user data excluding password and refreshToken
-  const loggedInUser = await User.findById(user.id).select("-password -refreshToken");
+  const loggedInUser = await User.findById(user.id).select(
+    "-password -refreshToken"
+  );
 
   const options = {
     httpOnly: true,
@@ -131,8 +139,34 @@ const getTotalCustomers = asyncHandler(async (req, res) => {
   // Return the count of users
   return res
     .status(200)
-    .json(new ApiResponse(200, { store: storeAdmin.storeName, userCount }, "User count fetched successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        { store: storeAdmin.storeName, userCount },
+        "User count fetched successfully"
+      )
+    );
 });
 
+const getUsersByStoreAdmin = asyncHandler(async (req, res) => {
+  const storeAdminId = req.user.id;
 
-export { registerUser, loginUser, getTotalCustomers };
+  const storeAdmin = await StoreAdmin.findById(storeAdminId);
+  if (!storeAdmin) {
+    throw new ApiError(404, "Store admin not found");
+  }
+
+  const users = await User.find({ store: storeAdmin.storeName }).select(
+    "-password -refreshToken"
+  );
+
+  if (users.length === 0) {
+    throw new ApiError(404, "No users found for this store");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, users, "Users fetched successfully"));
+});
+
+export { registerUser, loginUser, getTotalCustomers, getUsersByStoreAdmin };

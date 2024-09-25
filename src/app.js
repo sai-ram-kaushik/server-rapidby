@@ -20,6 +20,7 @@ app.use(express.static("public"));
 import adminRouter from "./routes/admin.routes.js";
 import categoryRouter from "./routes/category.routes.js";
 import catalogRouter from "./routes/catalog.routes.js";
+import themeRouter from "./routes/theme.routes.js";
 
 // store admins imports
 import storeAdminRouter from "./routes/store-admin.routes.js";
@@ -38,6 +39,7 @@ import storePublicUser from "./routes/user.routes.js";
 app.use("/api/admin", adminRouter);
 app.use("/api/admin", categoryRouter);
 app.use("/api/admin", catalogRouter);
+app.use("/api/admin", themeRouter);
 
 // store admin routes
 app.use("/api/store", storeAdminRouter);

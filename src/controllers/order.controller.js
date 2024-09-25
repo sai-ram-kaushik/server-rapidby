@@ -238,6 +238,39 @@ const getRevenuePerMonth = asyncHandler(async (req, res) => {
   }
 });
 
+const getUserOrderStats = asyncHandler(async (req, res) => {
+  const userId = req.params.userId; // Get user ID from request params
+
+  try {
+   
+    const userOrders = await Order.find({ user: userId });
+
+    if (!userOrders || userOrders.length === 0) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, null, "No orders found for this user"));
+    }
+
+    // Calculate total number of orders and total amount spent
+    const totalOrders = userOrders.length;
+    const totalAmountSpent = userOrders.reduce(
+      (acc, order) => acc + order.totalPrice,
+      0
+    );
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        { totalOrders, totalAmountSpent },
+        "User's order statistics fetched successfully"
+      )
+    );
+  } catch (error) {
+    console.error("Error fetching user order stats:", error);
+    throw new ApiError(500, "Internal Server Error");
+  }
+});
+
 
 export {
   createOrder,
@@ -248,5 +281,6 @@ export {
   deleteOrder,
   getPendingOrdersCount,
   getMonthlyMetrics,
-  getRevenuePerMonth
+  getRevenuePerMonth,
+  getUserOrderStats
 };
